@@ -217,6 +217,20 @@ const ImageProcessor = () => {
     ctx.putImageData(new ImageData(output, width, height), 0, 0);
   };
 
+  const gaussianKernel = [
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
+  ].map(row => row.map(value => value / 16));
+
+  const applyGaussianBlur = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const blurredData = convolve(imageData, gaussianKernel);
+    ctx.putImageData(blurredData, 0, 0);
+  };
+  
   return (
     <div>
       <h1>Przetwarzanie obrazu</h1>
@@ -250,6 +264,7 @@ const ImageProcessor = () => {
         <button onClick={applySmoothing}>Filtr Wygładzający</button>
         <button onClick={applyMedianFilter}>Filtr Medianowy</button>
         <button onClick={applySobelFilter}>Filtr Sobela</button>
+        <button onClick={applyGaussianBlur}>Filtr Gausa</button>
       </div>
       <div>
         <button onClick={() => applyGrayscale("average")}>
